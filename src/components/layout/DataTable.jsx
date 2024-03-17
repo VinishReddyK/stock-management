@@ -73,9 +73,9 @@ const DataTable = forwardRef(({ columns, data, onActionClick, loading, loadingMe
       });
       setFilteredItems(sortedItems);
     } else {
-      setFilteredItems(data);
+      setFilteredItems(filteredItems);
     }
-  }, [sortConfig, filteredItems, data]);
+  }, [sortConfig, filteredItems]);
 
   return (
     <>
