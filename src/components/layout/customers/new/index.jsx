@@ -11,8 +11,10 @@ function NewCustomerDialog({ open, fields, onClose, onCustomerCreate }) {
         contact_email: newCustomer.contact_email,
         address: newCustomer.address,
         phone: newCustomer.phone,
+        previous_orders: 0,
         notes: newCustomer.notes,
       });
+      newCustomer.previous_orders = 0;
       newCustomer.id = response.data.id;
       onCustomerCreate(newCustomer);
     } catch (error) {

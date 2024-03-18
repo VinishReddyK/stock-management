@@ -11,9 +11,11 @@ function NewVendorDialog({ open, fields, onClose, onVendorCreate }) {
         contact_email: newVendor.contact_email,
         address: newVendor.address,
         phone: newVendor.phone,
+        previous_orders: 0,
         notes: newVendor.notes,
       });
       newVendor.id = response.data.id;
+      newVendor.previous_orders = 0;
       onVendorCreate(newVendor);
     } catch (error) {
       console.error("An error occurred while creating the vendor", error);

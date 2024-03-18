@@ -10,7 +10,8 @@ function NewItemDialog({ open, fields, onClose, onItemCreate }) {
         name: newItem.name,
         description: newItem.description,
         price: newItem.price,
-        quantity: newItem.quantity,
+        sku: newItem.sku,
+        stock: newItem.stock,
         last_modified: date,
       });
       newItem.id = response.data.id;

@@ -19,7 +19,8 @@ function EditItemDialog({ open, onClose, itemId, fields, items, onItemUpdate }) 
         name: editedItem.name,
         description: editedItem.description,
         price: editedItem.price,
-        quantity: editedItem.quantity,
+        sku: editedItem.sku,
+        stock: editedItem.stock,
         last_modified: new Date().toISOString(),
       });
       onItemUpdate(editedItem);

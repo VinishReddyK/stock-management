@@ -19,7 +19,8 @@ const Items = () => {
     { id: "name", label: "Name", sortable: true },
     { id: "description", label: "Description", sortable: false },
     { id: "price", label: "Price", sortable: true },
-    { id: "quantity", label: "Quantity", sortable: true },
+    { id: "sku", label: "SKU", sortable: false },
+    { id: "stock", label: "Stock", sortable: true },
     { id: "last_modified", label: "Last Modified", sortable: true },
   ];
 
@@ -27,7 +28,8 @@ const Items = () => {
     { name: "name", label: "Name", type: "text" },
     { name: "description", label: "Description", type: "text" },
     { name: "price", label: "Price", type: "number" },
-    { name: "quantity", label: "Quantity", type: "number" },
+    { name: "sku", label: "SKU", type: "text" },
+    { name: "stock", label: "Stock", type: "number" },
   ];
 
   const handleItemUpdate = (updatedItem) => {

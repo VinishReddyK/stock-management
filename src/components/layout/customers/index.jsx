@@ -21,6 +21,7 @@ const Customers = () => {
     { id: "contact_email", label: "Contact Email", sortable: true },
     { id: "address", label: "Address", sortable: false },
     { id: "phone", label: "Phone", sortable: true },
+    { id: "previous_orders", label: "Previous Orders", sortable: true },
     { id: "notes", label: "Notes", sortable: false },
   ];
 
