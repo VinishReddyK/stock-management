@@ -93,6 +93,7 @@ const Customers = () => {
           Add New Customer
         </Button>
       </Box>
+      <h2>Customers</h2>
       <DataTable
         ref={tableRef}
         loading={loading}

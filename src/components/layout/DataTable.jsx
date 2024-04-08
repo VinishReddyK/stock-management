@@ -17,11 +17,12 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import PropTypes from "prop-types";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import LoadingComponent from "./LoadingComponent";
 
-const DataTable = forwardRef(({ columns, data, onActionClick, loading, loadingMessage, searchParam }, ref) => {
+const DataTable = forwardRef(({ columns, data, onActionClick, loading, loadingMessage, searchParam, actions = [] }, ref) => {
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "ascending" });
   const [searchText, setSearchText] = useState("");
   const [filteredItems, setFilteredItems] = useState(data);
@@ -142,6 +143,11 @@ const DataTable = forwardRef(({ columns, data, onActionClick, loading, loadingMe
                         <MenuItem onClick={() => onActionClick("delete", currentItemId)}>
                           <DeleteIcon sx={{ fontSize: "medium" }} />
                         </MenuItem>
+                        {actions.includes("details") && (
+                          <MenuItem onClick={() => onActionClick("viewDetails", currentItemId)}>
+                            <VisibilityIcon sx={{ fontSize: "medium" }} />
+                          </MenuItem>
+                        )}
                       </Menu>
                     </TableCell>
                   </TableRow>
@@ -180,6 +186,7 @@ DataTable.propTypes = {
   loading: PropTypes.bool,
   loadingMessage: PropTypes.string,
   searchParam: PropTypes.string.isRequired,
+  actions: PropTypes.array,
 };
 
 export default DataTable;

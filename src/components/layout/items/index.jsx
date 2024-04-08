@@ -91,6 +91,7 @@ const Items = () => {
           Add New Item
         </Button>
       </Box>
+      <h2>Items</h2>
       <DataTable
         ref={tableRef}
         loading={loading}

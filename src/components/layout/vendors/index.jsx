@@ -93,6 +93,7 @@ const Vendors = () => {
           Add New Vendor
         </Button>
       </Box>
+      <h2>Vendors</h2>
       <DataTable
         ref={tableRef}
         loading={loading}
