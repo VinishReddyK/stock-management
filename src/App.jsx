@@ -11,6 +11,9 @@ import Items from "./components/layout/items";
 import Customers from "./components/layout/customers/";
 import Vendors from "./components/layout/vendors/";
 import PurchaseOrdres from "./components/layout/purchaseorders";
+import Bills from "./components/layout/bills";
+import SalesOrders from "./components/layout/salesorders";
+import Invoices from "./components/layout/invoices";
 
 const App = () => {
   return (
@@ -37,10 +40,10 @@ const App = () => {
         <Route path="items" element={<Items />} />
         <Route path="customers" element={<Customers />} />
         <Route path="vendors" element={<Vendors />} />
-        <Route path="sales-orders" element={<PurchaseOrdres />} />
+        <Route path="sales-orders" element={<SalesOrders />} />
         <Route path="purchase-orders" element={<PurchaseOrdres />} />
-        <Route path="bills" element={<PurchaseOrdres />} />
-        <Route path="invoices" element={<PurchaseOrdres />} />
+        <Route path="bills" element={<Bills />} />
+        <Route path="invoices" element={<Invoices />} />
       </Route>
 
       <Route path="*" element={<NotFound />} />

@@ -17,107 +17,116 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import api from "../../../../services/axiosConfig";
 
-function NewPurchaseOrder({ open, onClose, onCreate }) {
-  const initialPurchaseOrderState = {
-    vendor_id: "",
+function EditSalesOrder({ open, onClose, onUpdate, orderId }) {
+  const initialSalesOrderState = {
+    customer_id: "",
     status: "Pending",
-    order_date: new Date().toISOString(),
+    order_date: "",
     notes: "",
-    items: [{ item_id: "", quantity: "", price_at_purchase: "" }],
+    items: [{ item_id: "", quantity: "", price_at_sale: "" }],
   };
-  const [purchaseOrder, setPurchaseOrder] = useState(initialPurchaseOrderState);
+  const [salesOrder, setSalesOrder] = useState(initialSalesOrderState);
   const [availableItems, setAvailableItems] = useState([]);
-  const [vendors, setVendors] = useState([]);
+  const [customers, setCustomers] = useState([]);
 
   useEffect(() => {
-    setPurchaseOrder(initialPurchaseOrderState);
-    const fetchItemsAndVendors = async () => {
+    const fetchItemsAndCustomers = async () => {
       try {
         const itemsResponse = await api.get("/items");
         setAvailableItems(itemsResponse.data.items);
 
-        const vendorsResponse = await api.get("/vendors");
-        setVendors(vendorsResponse.data.vendors);
+        const customersResponse = await api.get("/customers");
+        setCustomers(customersResponse.data.customers);
       } catch (error) {
-        console.error("Failed to fetch items or vendors:", error);
+        console.error("Failed to fetch items or customers:", error);
       }
     };
 
-    fetchItemsAndVendors();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open]);
+    const fetchSalesOrderDetails = async () => {
+      try {
+        const response = await api.get(`/sales_orders/${orderId}`);
+        const { items, sales_order } = response.data;
+        setSalesOrder({ ...sales_order[0], items });
+      } catch (error) {
+        console.error(`Failed to fetch sales order ${orderId}:`, error);
+      }
+    };
 
-  const handlePurchaseOrderChange = (field, value) => {
-    setPurchaseOrder((prevState) => ({
+    if (open) {
+      fetchItemsAndCustomers();
+      fetchSalesOrderDetails();
+    }
+  }, [open, orderId]);
+
+  const handleSalesOrderChange = (field, value) => {
+    setSalesOrder((prevState) => ({
       ...prevState,
       [field]: value,
     }));
   };
 
   const handleItemChange = (index, field, value) => {
-    const newItems = [...purchaseOrder.items];
+    const newItems = [...salesOrder.items];
     newItems[index][field] = value;
 
     if (field === "item_id") {
       const selectedItem = availableItems.find((item) => item.id === value);
       if (selectedItem) {
-        newItems[index]["price_at_purchase"] = selectedItem.price;
+        newItems[index]["price_at_sale"] = selectedItem.price;
       }
     }
 
-    setPurchaseOrder((prevState) => ({
+    setSalesOrder((prevState) => ({
       ...prevState,
       items: newItems,
     }));
   };
 
   const handleAddItem = () => {
-    setPurchaseOrder((prevState) => ({
+    setSalesOrder((prevState) => ({
       ...prevState,
-      items: [...prevState.items, { item_id: "", quantity: "" }],
+      items: [...prevState.items, { item_id: "", quantity: "", price_at_sale: "" }],
     }));
   };
 
   const handleRemoveItem = (index) => {
-    const newItems = purchaseOrder.items.filter((_, i) => i !== index);
-    setPurchaseOrder((prevState) => ({
+    const newItems = salesOrder.items.filter((_, i) => i !== index);
+    setSalesOrder((prevState) => ({
       ...prevState,
       items: newItems,
     }));
   };
 
   const handleSubmit = async () => {
-    const { items, ...purchaseOrderWithoutItems } = purchaseOrder;
     try {
-      const response = await api.post(`/purchase_orders/create`, {
-        ...purchaseOrderWithoutItems,
+      const { items, ...salesOrderWithoutItems } = salesOrder;
+      await api.put(`/sales_orders/${orderId}`, {
+        ...salesOrderWithoutItems,
         items,
       });
-      purchaseOrderWithoutItems.id = response.data.id;
-      purchaseOrderWithoutItems.order_date = new Date(purchaseOrderWithoutItems.order_date).toLocaleDateString();
-      onCreate(purchaseOrderWithoutItems);
+      salesOrderWithoutItems.order_date = new Date(salesOrderWithoutItems.order_date).toLocaleDateString();
+      onUpdate(salesOrderWithoutItems);
     } catch (error) {
-      console.error("An error occurred while creating the item", error);
+      console.error("An error occurred while updating the order", error);
     }
-
     onClose();
   };
 
   return (
     <Dialog open={open} onClose={onClose}>
-      <DialogTitle>{"New Purchase Order"}</DialogTitle>
+      <DialogTitle>Edit Sales Order</DialogTitle>
       <DialogContent>
         <FormControl fullWidth margin="dense">
-          <InputLabel id="vendor-select-label">Vendor</InputLabel>
+          <InputLabel id="customer-select-label">Customer</InputLabel>
           <Select
-            labelId="vendor-select-label"
-            value={purchaseOrder.vendor_id}
-            label="Vendor"
-            onChange={(e) => handlePurchaseOrderChange("vendor_id", e.target.value)}
+            labelId="customer-select-label"
+            value={salesOrder.customer_id}
+            label="Customer"
+            onChange={(e) => handleSalesOrderChange("customer_id", e.target.value)}
           >
-            {vendors.map((vendor) => (
-              <MenuItem key={vendor.id} value={vendor.id}>
-                {vendor.name}
+            {customers.map((customer) => (
+              <MenuItem key={customer.id} value={customer.id}>
+                {customer.name}
               </MenuItem>
             ))}
           </Select>
@@ -126,9 +135,9 @@ function NewPurchaseOrder({ open, onClose, onCreate }) {
           <InputLabel id="status-select-label">Status</InputLabel>
           <Select
             labelId="status-select-label"
-            value={purchaseOrder.status}
+            value={salesOrder.status}
             label="Status"
-            onChange={(e) => handlePurchaseOrderChange("status", e.target.value)}
+            onChange={(e) => handleSalesOrderChange("status", e.target.value)}
           >
             <MenuItem value="Pending">Pending</MenuItem>
             <MenuItem value="Completed">Completed</MenuItem>
@@ -140,16 +149,16 @@ function NewPurchaseOrder({ open, onClose, onCreate }) {
           margin="dense"
           label="Notes"
           variant="outlined"
-          value={purchaseOrder.notes}
-          onChange={(e) => handlePurchaseOrderChange("notes", e.target.value)}
+          value={salesOrder.notes}
+          onChange={(e) => handleSalesOrderChange("notes", e.target.value)}
         />
-        {purchaseOrder.items.map((item, index) => (
+        {salesOrder.items.map((item, index) => (
           <div key={index} style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "10px" }}>
             <FormControl fullWidth>
-              <InputLabel id="item-select-label">{`Item #${index + 1}`}</InputLabel>
+              <InputLabel id={`item-select-label-${index}`}>{`Item #${index + 1}`}</InputLabel>
               <Select
                 value={item.item_id}
-                labelId="item-select-label"
+                labelId={`item-select-label-${index}`}
                 label={`Item #${index + 1}`}
                 onChange={(e) => handleItemChange(index, "item_id", e.target.value)}
               >
@@ -183,16 +192,17 @@ function NewPurchaseOrder({ open, onClose, onCreate }) {
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Cancel</Button>
-        <Button onClick={handleSubmit}>Create</Button>
+        <Button onClick={handleSubmit}>Update</Button>
       </DialogActions>
     </Dialog>
   );
 }
 
-NewPurchaseOrder.propTypes = {
+EditSalesOrder.propTypes = {
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  onCreate: PropTypes.func.isRequired,
+  onUpdate: PropTypes.func.isRequired,
+  orderId: PropTypes.number,
 };
 
-export default NewPurchaseOrder;
+export default EditSalesOrder;
