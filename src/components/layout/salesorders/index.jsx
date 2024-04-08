@@ -5,6 +5,7 @@ import DataTable from "../DataTable";
 import NewSalesOrder from "./new";
 import EditSalesOrder from "./edit";
 import ViewSalesOrder from "./view";
+import Alert from "@mui/material/Alert";
 
 const SalesOrders = () => {
   const tableRef = useRef();
@@ -15,6 +16,7 @@ const SalesOrders = () => {
   const [isNewDialogOpen, setIsNewDialogOpen] = useState(false);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [currentSOId, setCurrentSOId] = useState(null);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchSalesOrders = async () => {
@@ -25,6 +27,7 @@ const SalesOrders = () => {
       } catch (error) {
         console.error("Failed to fetch sales orders:", error);
         setLoading(false);
+        setError("Failed to fetch sales orders. Please try again later.");
       }
     };
 
@@ -69,6 +72,7 @@ const SalesOrders = () => {
       setSalesOrders(salesOrders.filter((so) => so.id !== id));
     } catch (error) {
       console.error("Error deleting sales order:", error);
+      setError("Failed to delete sales order. Referenced in another module.");
     }
   };
 
@@ -86,6 +90,21 @@ const SalesOrders = () => {
 
   return (
     <Box sx={{ position: "relative", width: "100%", height: "100%" }}>
+      {error && (
+        <Alert
+          severity="error"
+          style={{
+            position: "fixed",
+            top: "50px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            width: "fit-content",
+            boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
+          }}
+        >
+          {error}
+        </Alert>
+      )}
       <Box position="absolute" top={0} right={0} mt={2}>
         <Button variant="contained" color="primary" onClick={() => newAction()}>
           Create Sales Order

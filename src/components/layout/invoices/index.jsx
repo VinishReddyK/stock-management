@@ -3,6 +3,7 @@ import api from "../../../services/axiosConfig";
 import { Box, Button } from "@mui/material";
 import DataTable from "../DataTable";
 import NewInvoice from "./new";
+import Alert from "@mui/material/Alert";
 
 const Invoices = () => {
   const tableRef = useRef();
@@ -10,6 +11,7 @@ const Invoices = () => {
   const [loading, setLoading] = useState(true);
   const [invoices, setInvoices] = useState([]);
   const [isNewDialogOpen, setIsNewDialogOpen] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchInvoices = async () => {
@@ -22,6 +24,7 @@ const Invoices = () => {
       } catch (error) {
         console.error("Failed to fetch Invoices:", error);
         setLoading(false);
+        setError("Failed to fetch Invoices. Please try again later.");
       }
     };
 
@@ -53,25 +56,31 @@ const Invoices = () => {
       setInvoices(invoices.filter((invoice) => invoice.id !== id));
     } catch (error) {
       console.error("Error deleting invoice:", error);
+      setError("Failed to delete invoice. Please try again later.");
     }
   };
 
   const updateAction = async (id) => {
     tableRef.current.closeFunction();
-    const updatedInvoices = await Promise.all(
-      invoices.map(async (invoice) => {
-        if (invoice.id === id) {
-          invoice.invoice_date = new Date().toISOString();
-          const res = await api.put(`/invoices/${id}`, invoice);
-          invoice.invoice_date = new Date(invoice.invoice_date).toLocaleDateString();
-          invoice.amount_due = res.data.amount_due;
-          return invoice;
-        } else {
-          return invoice;
-        }
-      })
-    );
-    setInvoices(updatedInvoices);
+    try {
+      const updatedInvoices = await Promise.all(
+        invoices.map(async (invoice) => {
+          if (invoice.id === id) {
+            invoice.invoice_date = new Date().toISOString();
+            const res = await api.put(`/invoices/${id}`, invoice);
+            invoice.invoice_date = new Date(invoice.invoice_date).toLocaleDateString();
+            invoice.amount_due = res.data.amount_due;
+            return invoice;
+          } else {
+            return invoice;
+          }
+        })
+      );
+      setInvoices(updatedInvoices);
+    } catch (error) {
+      console.error("Error updating invoice:", error);
+      setError("Failed to update invoice. Please try again later.");
+    }
   };
 
   const newAction = () => {
@@ -84,6 +93,21 @@ const Invoices = () => {
 
   return (
     <Box sx={{ position: "relative", width: "100%", height: "100%" }}>
+      {error && (
+        <Alert
+          severity="error"
+          style={{
+            position: "fixed",
+            top: "50px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            width: "fit-content",
+            boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
+          }}
+        >
+          {error}
+        </Alert>
+      )}
       <Box position="absolute" top={0} right={0} mt={2}>
         <Button variant="contained" color="primary" onClick={newAction}>
           Create Invoice

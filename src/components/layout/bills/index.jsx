@@ -3,6 +3,7 @@ import api from "../../../services/axiosConfig";
 import { Box, Button } from "@mui/material";
 import DataTable from "../DataTable";
 import NewBill from "./new";
+import Alert from "@mui/material/Alert";
 
 const Bills = () => {
   const tableRef = useRef();
@@ -10,6 +11,7 @@ const Bills = () => {
   const [loading, setLoading] = useState(true);
   const [bills, setBills] = useState([]);
   const [isNewDialogOpen, setIsNewDialogOpen] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchBills = async () => {
@@ -51,6 +53,10 @@ const Bills = () => {
       setBills(bills.filter((po) => po.id !== id));
     } catch (error) {
       console.error("Error deleting bill:", error);
+      setError("Error: Bill is used by other modules!");
+      setTimeout(() => {
+        setError("");
+      }, 5000);
     }
   };
 
@@ -82,6 +88,21 @@ const Bills = () => {
 
   return (
     <Box sx={{ position: "relative", width: "100%", height: "100%" }}>
+      {error && (
+        <Alert
+          severity="error"
+          style={{
+            position: "fixed",
+            top: "50px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            width: "fit-content",
+            boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
+          }}
+        >
+          {error}
+        </Alert>
+      )}
       <Box position="absolute" top={0} right={0} mt={2}>
         <Button variant="contained" color="primary" onClick={newAction}>
           Create Bill
