@@ -17,7 +17,14 @@ const Bills = () => {
     const fetchBills = async () => {
       try {
         const response = await api.get("/bills");
-        setBills(response.data.bills.map((bill) => ({ ...bill, bill_date: new Date(bill.bill_date).toLocaleDateString() })));
+        setBills(
+          response.data.bills.map((bill) => ({
+            ...bill,
+            bill_date: new Date(bill.bill_date).toLocaleDateString(),
+            amount_due: bill.amount_due.toFixed(2),
+          }))
+        );
+
         setLoading(false);
       } catch (error) {
         console.error("Failed to fetch Bills:", error);

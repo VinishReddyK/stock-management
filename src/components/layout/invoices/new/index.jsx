@@ -77,7 +77,7 @@ function NewInvoice({ open, onClose, onCreate }) {
     try {
       const response = await api.post(`/invoices/create`, invoice);
       invoice.id = response.data.id;
-      invoice.amount_due = response.data.amount_due;
+      invoice.amount_due = response.data.amount_due.toFixed(2);
       invoice.invoice_date = new Date(invoice.invoice_date).toLocaleDateString();
       onCreate(invoice);
     } catch (error) {

@@ -77,7 +77,7 @@ function NewBill({ open, onClose, onCreate }) {
     try {
       const response = await api.post(`/bills/create`, bill);
       bill.id = response.data.id;
-      bill.amount_due = response.data.amount_due;
+      bill.amount_due = response.data.amount_due.toFixed(2);
       bill.bill_date = new Date(bill.bill_date).toLocaleDateString();
       onCreate(bill);
     } catch (error) {

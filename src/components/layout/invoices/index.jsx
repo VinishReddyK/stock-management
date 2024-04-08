@@ -18,7 +18,11 @@ const Invoices = () => {
       try {
         const response = await api.get("/invoices");
         setInvoices(
-          response.data.invoices.map((invoice) => ({ ...invoice, invoice_date: new Date(invoice.invoice_date).toLocaleDateString() }))
+          response.data.invoices.map((invoice) => ({
+            ...invoice,
+            invoice_date: new Date(invoice.invoice_date).toLocaleDateString(),
+            amount_due: invoice.amount_due.toFixed(2),
+          }))
         );
         setLoading(false);
       } catch (error) {
