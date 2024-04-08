@@ -123,6 +123,7 @@ function EditPurchaseOrder({ open, onClose, onUpdate, orderId }) {
             value={purchaseOrder.vendor_id}
             label="Vendor"
             onChange={(e) => handlePurchaseOrderChange("vendor_id", e.target.value)}
+            disabled
           >
             {vendors.map((vendor) => (
               <MenuItem key={vendor.id} value={vendor.id}>

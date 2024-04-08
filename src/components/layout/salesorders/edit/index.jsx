@@ -123,6 +123,7 @@ function EditSalesOrder({ open, onClose, onUpdate, orderId }) {
             value={salesOrder.customer_id}
             label="Customer"
             onChange={(e) => handleSalesOrderChange("customer_id", e.target.value)}
+            disabled
           >
             {customers.map((customer) => (
               <MenuItem key={customer.id} value={customer.id}>
