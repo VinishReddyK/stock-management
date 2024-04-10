@@ -1,7 +1,7 @@
 import { useState } from "react";
 import api from "../../services/axiosConfig";
 import { useNavigate } from "react-router-dom";
-import Button from "@mui/material/Button";
+import { Button, CircularProgress, Grid } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -21,12 +21,15 @@ const Create = () => {
   const [organization, setOrganization] = useState("");
   const [userName, setUserName] = useState("");
   const [error, setError] = useState("");
+  const [severity, setseverity] = useState("");
   const navigate = useNavigate();
 
   const handleCreate = async (e) => {
     e.preventDefault();
 
     try {
+      setseverity("info");
+      setError("Please wait loading... This might take a while");
       const response = await api.post("/user/createUserAndOrganization", {
         userName,
         userEmail: email,
@@ -37,13 +40,15 @@ const Create = () => {
       if (response.status === 200) {
         navigate("/login");
       } else {
+        setseverity("error");
         setError("Create failed. Please try again.");
         setTimeout(() => {
           setError("");
         }, 5000);
       }
     } catch (error) {
-      setError(error.response?.data?.message || "Email is already registred");
+      setseverity("error");
+      setError(error.response?.data?.message || "Email is already registred or not valid");
       setTimeout(() => {
         setError("");
       }, 5000);
@@ -141,7 +146,7 @@ const Create = () => {
           />
           {error && (
             <Alert
-              severity="error"
+              severity={severity}
               style={{
                 position: "fixed",
                 top: "50px",
@@ -151,7 +156,15 @@ const Create = () => {
                 boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
               }}
             >
-              {error}
+              {severity === "info" && (
+                <Grid container spacing={2} alignItems="center">
+                  <Grid item>
+                    <CircularProgress style={{ verticalAlign: "middle" }} size={15} />
+                  </Grid>
+                  <Grid item>{error}</Grid>
+                </Grid>
+              )}
+              {severity === "error" && error}
             </Alert>
           )}
           <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }} startIcon={<PersonAddIcon />}>

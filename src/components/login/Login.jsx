@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../services/axiosConfig";
-import Button from "@mui/material/Button";
+import { Button, CircularProgress, Grid } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -18,11 +18,14 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const [severity, setseverity] = useState("");
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
     try {
+      setseverity("info");
+      setError("Please wait loading... This might take a while");
       const response = await api.post("/auth/login", {
         email,
         password,
@@ -34,10 +37,15 @@ const Login = () => {
       }
     } catch (error) {
       if (error.response.status === 401) {
+        setseverity("error");
         setError("Login failed. Please check your credentials and try again.");
       } else {
         setError(error.response.data.message);
       }
+    } finally {
+      setTimeout(() => {
+        setError("");
+      }, 5000);
     }
   };
 
@@ -56,7 +64,7 @@ const Login = () => {
         </Typography>
         {error && (
           <Alert
-            severity="error"
+            severity={severity}
             style={{
               position: "fixed",
               top: "50px",
@@ -66,7 +74,15 @@ const Login = () => {
               boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
             }}
           >
-            {error}
+            {severity === "info" && (
+              <Grid container spacing={2} alignItems="center">
+                <Grid item>
+                  <CircularProgress style={{ verticalAlign: "middle" }} size={15} />
+                </Grid>
+                <Grid item>{error}</Grid>
+              </Grid>
+            )}
+            {severity === "error" && { error }}
           </Alert>
         )}
         <Box component="form" onSubmit={handleLogin} noValidate sx={{ mt: 1 }}>

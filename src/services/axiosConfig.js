@@ -6,7 +6,7 @@ const redirectToLogin = () => {
 
 var api = axios.create({
   baseURL: `${window.location.protocol}//${window.location.hostname}:3000`,
-  timeout: 10000,
+  timeout: 100000,
 });
 
 api.interceptors.request.use(
