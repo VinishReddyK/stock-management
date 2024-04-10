@@ -18,13 +18,13 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const [severity, setseverity] = useState("");
+  const [severity, setSeverity] = useState("");
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
     try {
-      setseverity("info");
+      setSeverity("info");
       setError("Please wait loading... This might take a while");
       const response = await api.post("/auth/login", {
         email,
@@ -37,9 +37,10 @@ const Login = () => {
       }
     } catch (error) {
       if (error.response.status === 401) {
-        setseverity("error");
+        setSeverity("error");
         setError("Login failed. Please check your credentials and try again.");
       } else {
+        setSeverity("error");
         setError(error.response.data.message);
       }
     } finally {
@@ -82,7 +83,7 @@ const Login = () => {
                 <Grid item>{error}</Grid>
               </Grid>
             )}
-            {severity === "error" && { error }}
+            {severity === "error" && error}
           </Alert>
         )}
         <Box component="form" onSubmit={handleLogin} noValidate sx={{ mt: 1 }}>
