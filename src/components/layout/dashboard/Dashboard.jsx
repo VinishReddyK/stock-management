@@ -53,7 +53,7 @@ function Dashboard() {
           <Paper
             elevation={3}
             style={{
-              padding: "36px",
+              padding: "20px",
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",
@@ -95,7 +95,7 @@ function Dashboard() {
         <Grid item xs={12} md={6}>
           <Paper elevation={3} style={{ padding: "20px" }}>
             <Typography variant="h6">Financial Overview</Typography>
-            <ResponsiveContainer width="100%" height={300}>
+            <ResponsiveContainer width="100%" height={270}>
               {totalValues === 0 ? (
                 <Typography variant="subtitle1" style={{ textAlign: "center", paddingTop: "135px" }}>
                   No data to show

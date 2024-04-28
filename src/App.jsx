@@ -14,6 +14,8 @@ import PurchaseOrdres from "./components/layout/purchaseorders";
 import Bills from "./components/layout/bills";
 import SalesOrders from "./components/layout/salesorders";
 import Invoices from "./components/layout/invoices";
+import Warehouses from "./components/layout/warehouses";
+import BinLocations from "./components/layout/binlocations";
 
 const App = () => {
   return (
@@ -44,6 +46,8 @@ const App = () => {
         <Route path="purchase-orders" element={<PurchaseOrdres />} />
         <Route path="bills" element={<Bills />} />
         <Route path="invoices" element={<Invoices />} />
+        <Route path="/warehouses" element={<Warehouses />} />
+        <Route path="/bin-locations" element={<BinLocations />} />
       </Route>
 
       <Route path="*" element={<NotFound />} />
