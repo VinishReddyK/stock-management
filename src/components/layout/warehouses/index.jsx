@@ -4,6 +4,7 @@ import { Box, Button } from "@mui/material";
 import DataTable from "../DataTable";
 import EditWarehouseDialog from "./edit";
 import NewWarehouseDialog from "./new";
+import WarehouseDetailsDialog from "./view";
 import Alert from "@mui/material/Alert";
 
 const Warehouses = () => {
@@ -13,6 +14,7 @@ const Warehouses = () => {
   const [loading, setLoading] = useState(true);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isNewDialogOpen, setIsNewDialogOpen] = useState(false);
+  const [isDetailsDialogOpen, setIsDetailsDialogOpen] = useState(false);
   const [currentWarehouseId, setCurrentWarehouseId] = useState(null);
   const [error, setError] = useState("");
 
@@ -60,9 +62,16 @@ const Warehouses = () => {
     }
   };
 
+  const detailsAction = (id) => {
+    setCurrentWarehouseId(id);
+    setIsDetailsDialogOpen(true);
+  };
+
   const actionCaller = (actionName, warehouseId) => {
     if (actionName === "delete") {
       deleteAction(warehouseId);
+    } else if (actionName === "viewDetails") {
+      detailsAction(warehouseId);
     } else if (actionName === "edit") {
       editAction(warehouseId);
     }
@@ -113,6 +122,7 @@ const Warehouses = () => {
         columns={columns}
         data={warehouses}
         onActionClick={actionCaller}
+        actions={["details"]}
         searchParam={"name"}
       />
       <EditWarehouseDialog
@@ -129,6 +139,7 @@ const Warehouses = () => {
         onWarehouseCreate={handleNewWarehouse}
         fields={fields}
       />
+      <WarehouseDetailsDialog open={isDetailsDialogOpen} onClose={() => setIsDetailsDialogOpen(false)} warehouseId={currentWarehouseId} />
     </Box>
   );
 };
