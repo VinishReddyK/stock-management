@@ -3,6 +3,7 @@ import api from "../../../services/axiosConfig";
 import { Box, Button } from "@mui/material";
 import DataTable from "../DataTable";
 import NewInvoice from "./new";
+import EditInvoice from "./edit";
 import Alert from "@mui/material/Alert";
 
 const Invoices = () => {
@@ -11,6 +12,8 @@ const Invoices = () => {
   const [loading, setLoading] = useState(true);
   const [invoices, setInvoices] = useState([]);
   const [isNewDialogOpen, setIsNewDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [selectedInvoice, setSelectedInvoice] = useState(null);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -48,6 +51,8 @@ const Invoices = () => {
   const handleActionClick = (action, id) => {
     if (action === "delete") {
       deleteAction(id);
+    } else if (action === "edit") {
+      editAction(id);
     } else if (action === "update") {
       updateAction(id);
     }
@@ -85,6 +90,17 @@ const Invoices = () => {
       console.error("Error updating invoice:", error);
       setError("Failed to update invoice. Please try again later.");
     }
+  };
+
+  const handleInvoiceUpdate = (updatedInvoice) => {
+    setInvoices(invoices.map((invoice) => (invoice.id === updatedInvoice.id ? updatedInvoice : invoice)));
+    setIsEditDialogOpen(false);
+  };
+
+  const editAction = (id) => {
+    const invoice = invoices.find((invoice) => invoice.id === id);
+    setSelectedInvoice(invoice);
+    setIsEditDialogOpen(true);
   };
 
   const newAction = () => {
@@ -127,10 +143,18 @@ const Invoices = () => {
           loading={loading}
           loadingMessage="Loading Invoices..."
           searchParam="id"
-          actions={["update", "noedit"]}
+          actions={["update"]}
         />
       </div>
       <NewInvoice open={isNewDialogOpen} onClose={() => setIsNewDialogOpen(false)} onCreate={handleInvoiceCreation} />
+      {selectedInvoice && (
+        <EditInvoice
+          open={isEditDialogOpen}
+          invoiceDetails={selectedInvoice}
+          onClose={() => setIsEditDialogOpen(false)}
+          onSave={handleInvoiceUpdate}
+        />
+      )}
     </Box>
   );
 };

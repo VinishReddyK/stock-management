@@ -138,11 +138,9 @@ const DataTable = forwardRef(({ columns, data, onActionClick, loading, loadingMe
                         <MoreVertIcon />
                       </IconButton>
                       <Menu id="action-menu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
-                        {!actions.includes("noedit") && (
-                          <MenuItem onClick={() => onActionClick("edit", currentItemId)}>
-                            <EditIcon sx={{ fontSize: "medium" }} />
-                          </MenuItem>
-                        )}
+                        <MenuItem onClick={() => onActionClick("edit", currentItemId)}>
+                          <EditIcon sx={{ fontSize: "medium" }} />
+                        </MenuItem>
                         <MenuItem onClick={() => onActionClick("delete", currentItemId)}>
                           <DeleteIcon sx={{ fontSize: "medium" }} />
                         </MenuItem>

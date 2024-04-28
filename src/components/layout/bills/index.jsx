@@ -3,6 +3,7 @@ import api from "../../../services/axiosConfig";
 import { Box, Button } from "@mui/material";
 import DataTable from "../DataTable";
 import NewBill from "./new";
+import EditBill from "./edit";
 import Alert from "@mui/material/Alert";
 
 const Bills = () => {
@@ -11,6 +12,8 @@ const Bills = () => {
   const [loading, setLoading] = useState(true);
   const [bills, setBills] = useState([]);
   const [isNewDialogOpen, setIsNewDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [selectedBill, setSelectedBill] = useState(null);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -48,6 +51,8 @@ const Bills = () => {
   const handleActionClick = (action, id) => {
     if (action === "delete") {
       deleteAction(id);
+    } else if (action === "edit") {
+      editAction(id);
     } else if (action === "update") {
       updateAction(id);
     }
@@ -83,6 +88,17 @@ const Bills = () => {
       })
     );
     setBills(updatedBills);
+  };
+
+  const handleBillUpdate = (updatedBill) => {
+    setBills(bills.map((bill) => (bill.id === updatedBill.id ? updatedBill : bill)));
+    setIsEditDialogOpen(false);
+  };
+
+  const editAction = (id) => {
+    const bill = bills.find((bill) => bill.id === id);
+    setSelectedBill(bill);
+    setIsEditDialogOpen(true);
   };
 
   const newAction = () => {
@@ -125,10 +141,13 @@ const Bills = () => {
           loading={loading}
           loadingMessage="Loading Bills..."
           searchParam="id"
-          actions={["update", "noedit"]}
+          actions={["update"]}
         />
       </div>
       <NewBill open={isNewDialogOpen} onClose={() => setIsNewDialogOpen(false)} onCreate={handleBillCreation} />
+      {selectedBill && (
+        <EditBill open={isEditDialogOpen} billDetails={selectedBill} onClose={() => setIsEditDialogOpen(false)} onSave={handleBillUpdate} />
+      )}
     </Box>
   );
 };
