@@ -4,11 +4,14 @@ const redirectToLogin = () => {
   window.location = "/login";
 };
 
-var api = axios.create({
-  baseURL: `${window.location.protocol}//${window.location.hostname}:3000`,
-  timeout: 100000,
+// eslint-disable-next-line react-refresh/only-export-components
+export const api = axios.create({
+  baseURL:
+    process.env.NODE_ENV === "development"
+      ? `http://${window.location.hostname}:3102/api` // Local development (port 3102)
+      : `${window.location.protocol}//${window.location.hostname}/api`, // Production
+  timeout: 10000,
 });
-
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");

@@ -18,7 +18,7 @@ const authRoutes = require("./routes/auth").router;
 const { verifyToken, verifyOrgAccess } = require("./routes/auth");
 
 const app = express();
-const port = 3000;
+const port = 3102;
 
 // Middleware
 app.use(cors());
